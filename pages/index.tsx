@@ -1,3 +1,5 @@
+import Button from '@components/Button'
+import { css } from '@emotion/react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
@@ -53,7 +55,17 @@ const Home: NextPage = () => {
           type="text"
           placeholder="name"
         />
-        <button onClick={handleClick}>Add Jacket</button>
+        <button
+          css={css`
+            background-color: hotpink;
+            padding: 16px;
+            border-radius: 8px;
+          `}
+          onClick={handleClick}
+        >
+          Add Jacket
+        </button>
+        <Button onClick={handleClick}>Add Jacket</Button>
 
         <div>
           <p>Product List</p>
