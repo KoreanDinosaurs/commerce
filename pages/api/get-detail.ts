@@ -7,7 +7,6 @@ const notion = new Client({
 
 async function getDetail(pageId: string, propertyId: string) {
   try {
-    console.log(propertyId, '시발 왜 안되는거야')
     const response = await notion.pages.properties.retrieve({
       page_id: pageId,
       property_id: propertyId,
