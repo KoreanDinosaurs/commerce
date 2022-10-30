@@ -6,14 +6,18 @@ import { CATEGORY_MAP, FILTERS, TAKE } from 'constants/products'
 import { IconSearch } from '@tabler/icons'
 import useDebounce from 'hooks/useDebounce'
 import { useQuery } from '@tanstack/react-query'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/router'
 
 export default function Products() {
+  const router = useRouter()
   const [activePage, setPage] = useState(1)
   const [selectedCategory, setCategory] = useState<string>('-1')
   const [selectedFilter, setFilter] = useState<string | null>(FILTERS[0].value)
   const [keyword, setKeyword] = useState<string>('')
 
   const debouncedKeyword = useDebounce<string>(keyword)
+  const { data: session } = useSession()
 
   const { data: categories } = useQuery<
     { items: categories[] },
@@ -63,9 +67,10 @@ export default function Products() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setKeyword(e.target.value)
   }
-
+  console.log(session)
   return (
     <div className="px-36 mt-36 mb-36">
+      {session && <p>{session.user?.name}님</p>}
       <div className="mb-4">
         <Input
           icon={<IconSearch />}
@@ -97,7 +102,10 @@ export default function Products() {
         <div className="grid grid-cols-3 gap-5">
           {products.map((item) => {
             return (
-              <div key={item.id}>
+              <div
+                key={item.id}
+                onClick={() => router.push(`/products/${item.id}`)}
+              >
                 <Image
                   className="rounded"
                   src={item.image_url ?? ''}
