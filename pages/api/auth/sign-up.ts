@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client'
 import jwtDecode from 'jwt-decode'
 
 const prisma = new PrismaClient()
-
+// 안씀
 async function SignUp(credential: string) {
   const decoded: { name: string; email: string; picture: string } =
     jwtDecode(credential)

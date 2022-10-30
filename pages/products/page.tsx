@@ -18,7 +18,7 @@ export default function Products() {
 
   const debouncedKeyword = useDebounce<string>(keyword)
   const { data: session } = useSession()
-
+  console.log(session)
   const { data: categories } = useQuery<
     { items: categories[] },
     unknown,
