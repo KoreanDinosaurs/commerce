@@ -67,7 +67,7 @@ export default function Products() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setKeyword(e.target.value)
   }
-  console.log(session)
+
   return (
     <div className="px-36 mt-36 mb-36">
       {session && <p>{session.user?.name}님</p>}

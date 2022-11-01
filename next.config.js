@@ -6,7 +6,11 @@ const nextConfig = {
     emotion: true,
   },
   images: {
-    domains: ['picsum.photos', 'kream-phinf.pstatic.net'],
+    domains: [
+      'picsum.photos',
+      'kream-phinf.pstatic.net',
+      'lh3.googleusercontent.com',
+    ],
   },
 }
 

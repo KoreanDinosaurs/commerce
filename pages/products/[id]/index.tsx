@@ -8,18 +8,14 @@ import Carousel from 'nuka-carousel/lib/carousel'
 
 import { EditorState } from 'draft-js'
 import { GetServerSidePropsContext } from 'next'
-import { products } from '@prisma/client'
+import { Cart, products } from '@prisma/client'
 import { format } from 'date-fns'
 import { CATEGORY_MAP } from 'constants/products'
 import { useSession } from 'next-auth/react'
-import {
-  QueryClient,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Button } from '@mantine/core'
-import { IconHeartbeat, IconHeart } from '@tabler/icons'
+import { IconHeartbeat, IconHeart, IconShoppingCart } from '@tabler/icons'
+import { CountControl } from '@components/CountControl'
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const product = await fetch(
@@ -37,6 +33,7 @@ export default function Products(props: {
   product: products & { images: string[] }
 }) {
   const [index, setIndex] = useState(0)
+  const [quantity, setQuantity] = useState<number | undefined>(1)
   const { data: session } = useSession()
   const router = useRouter()
   const { id: productId } = router.query
@@ -90,17 +87,47 @@ export default function Products(props: {
       },
     },
   )
+  const { mutate: addCart } = useMutation<
+    unknown,
+    unknown,
+    Omit<Cart, 'id' | 'userId'>
+  >(
+    (item) =>
+      fetch('/api/add-cart', {
+        method: 'POST',
+        body: JSON.stringify({ item }),
+      })
+        .then((data) => data.json())
+        .then((data) => data.items),
+    {
+      onMutate: () => {
+        queryClient.invalidateQueries(['/api/get-cart'])
+      },
+      onSuccess: () => {
+        router.push('/cart')
+      },
+    },
+  )
   const product = props.product
   const isWished = wishList ? wishList.includes(productId as string) : false
-
+  const validate = (type: 'cart' | 'order') => {
+    alert('장바구니로 이동')
+    if (type == 'cart') {
+      addCart({
+        productId: product.id,
+        quantity: quantity!,
+        amount: product.price * quantity!,
+      })
+    }
+  }
   return (
     <>
       {product !== null && productId !== null ? (
-        <div className="p-24 flex flex-row">
+        <div className="flex flex-row">
           <div style={{ maxWidth: 600, marginRight: 52 }}>
             <Carousel
               animation="fade"
-              autoplay
+              // autoplay
               withoutControls={true}
               wrapAround
               speed={10}
@@ -111,8 +138,8 @@ export default function Products(props: {
                   key={`${url}-carousel-${idx}`}
                   src={url}
                   alt="image"
-                  width={600}
-                  height={600}
+                  width={500}
+                  height={500}
                   // layout="responsive"
                 />
               ))}
@@ -139,32 +166,53 @@ export default function Products(props: {
             <div className="text-lg">
               {product.price.toLocaleString('ko-kr')}원
             </div>
-
-            <Button
-              // loading={isLoading}
-              disabled={wishList == null}
-              leftIcon={
-                isWished ? (
-                  <IconHeart size={20} stroke={1.5} />
-                ) : (
-                  <IconHeartbeat size={20} stroke={1.5} />
-                )
-              }
-              style={{ backgroundColor: isWished ? 'red' : 'grey' }}
-              radius="xl"
-              size="md"
-              styles={{ root: { paddingRight: 14, height: 40 } }}
-              onClick={() => {
-                if (session == null) {
-                  alert('로그인이 필요해요')
-                  router.push('/auth/login')
-                  return
+            <div className="flex gap-4 items-center">
+              <span className="text-lg">수량</span>
+              <CountControl value={quantity} setValue={setQuantity} />
+            </div>
+            <div className="flex gap-4">
+              <Button
+                leftIcon={<IconShoppingCart />}
+                style={{ backgroundColor: 'black' }}
+                radius="xl"
+                size="md"
+                styles={{ root: { paddingRight: 14, height: 40 } }}
+                onClick={() => {
+                  if (session == null) {
+                    alert('로그인이 필요해요')
+                    router.push('/auth/login')
+                    return
+                  }
+                  validate('cart')
+                }}
+              >
+                장바구니
+              </Button>
+              <Button
+                disabled={wishList == null}
+                leftIcon={
+                  isWished ? (
+                    <IconHeart size={20} stroke={1.5} />
+                  ) : (
+                    <IconHeartbeat size={20} stroke={1.5} />
+                  )
                 }
-                mutate(productId as string)
-              }}
-            >
-              찜하기
-            </Button>
+                style={{ backgroundColor: isWished ? 'red' : 'grey' }}
+                radius="xl"
+                size="md"
+                styles={{ root: { paddingRight: 14, height: 40 } }}
+                onClick={() => {
+                  if (session == null) {
+                    alert('로그인이 필요해요')
+                    router.push('/auth/login')
+                    return
+                  }
+                  mutate(productId as string)
+                }}
+              >
+                찜하기
+              </Button>
+            </div>
             <div className="text-sm  text-zinc-300">
               등록: {format(new Date(product.createdAt), 'yyyy년 M월 d일')}
             </div>
