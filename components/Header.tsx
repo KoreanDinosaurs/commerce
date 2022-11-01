@@ -12,7 +12,10 @@ export default function Header() {
         <IconHome onClick={() => router.push('/')} />
         <span className="m-auto" />
         <IconHeart className="mr-4" onClick={() => router.push('/wishlist')} />
-        <IconShoppingCart className="mr-4" />
+        <IconShoppingCart
+          className="mr-4"
+          onClick={() => router.push('/cart')}
+        />
         {session ? (
           <Image
             src={session.user?.image!}

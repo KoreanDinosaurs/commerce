@@ -8,7 +8,7 @@ import Carousel from 'nuka-carousel/lib/carousel'
 
 import { EditorState } from 'draft-js'
 import { GetServerSidePropsContext } from 'next'
-import { Cart, products } from '@prisma/client'
+import { Cart, OrderItem, products } from '@prisma/client'
 import { format } from 'date-fns'
 import { CATEGORY_MAP } from 'constants/products'
 import { useSession } from 'next-auth/react'
@@ -16,6 +16,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Button } from '@mantine/core'
 import { IconHeartbeat, IconHeart, IconShoppingCart } from '@tabler/icons'
 import { CountControl } from '@components/CountControl'
+import { ORDER_QUERY_KEY } from 'pages/my'
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const product = await fetch(
@@ -108,16 +109,48 @@ export default function Products(props: {
       },
     },
   )
+  const { mutate: addOrder } = useMutation<
+    unknown,
+    unknown,
+    Omit<OrderItem, 'id'>[],
+    any
+  >(
+    (items) =>
+      fetch('/api/add-order', {
+        method: 'POST',
+        body: JSON.stringify({ items }),
+      })
+        .then((data) => data.json())
+        .then((data) => data.items),
+    {
+      onMutate: () => {
+        queryClient.invalidateQueries([ORDER_QUERY_KEY])
+      },
+      onSuccess: () => {
+        router.push('/my')
+      },
+    },
+  )
   const product = props.product
   const isWished = wishList ? wishList.includes(productId as string) : false
   const validate = (type: 'cart' | 'order') => {
-    alert('장바구니로 이동')
     if (type == 'cart') {
+      alert('장바구니로 이동')
       addCart({
         productId: product.id,
         quantity: quantity!,
         amount: product.price * quantity!,
       })
+    }
+    if (type == 'order') {
+      addOrder([
+        {
+          productId: product.id,
+          quantity: quantity!,
+          amount: product.price * quantity!,
+          price: product.price,
+        },
+      ])
     }
   }
   return (
@@ -213,6 +246,22 @@ export default function Products(props: {
                 찜하기
               </Button>
             </div>
+            <Button
+              style={{ backgroundColor: 'black' }}
+              radius="xl"
+              size="md"
+              styles={{ root: { paddingRight: 14, height: 40 } }}
+              onClick={() => {
+                if (session == null) {
+                  alert('로그인이 필요해요')
+                  router.push('/auth/login')
+                  return
+                }
+                validate('order')
+              }}
+            >
+              구매하기
+            </Button>
             <div className="text-sm  text-zinc-300">
               등록: {format(new Date(product.createdAt), 'yyyy년 M월 d일')}
             </div>

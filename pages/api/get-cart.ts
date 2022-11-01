@@ -9,9 +9,7 @@ async function getCart(userId: string) {
   try {
     const cart =
       await prisma.$queryRaw`SELECT c.id, userId, quantity, productId, amount, price, name, image_url FROM Cart as c Join products as p WHERE c.productId=p.id AND c.userId=${userId};`
-    // if (cart && cart.length > 0) {
-    //   return cart
-    // }
+
     console.log(cart)
     return cart
   } catch (error) {
