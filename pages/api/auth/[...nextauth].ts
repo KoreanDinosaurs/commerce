@@ -23,6 +23,5 @@ export const authOptions: NextAuthOptions = {
       return session
     },
   },
-  secret: 'KzJLXYfO8+jYxFKSSYKMixlJd5CXl1VUwRHxHkfVu7k=',
 }
 export default NextAuth(authOptions)
