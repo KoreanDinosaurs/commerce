@@ -3,7 +3,7 @@ import Button from './Button'
 
 export default function GoogleLogin() {
   const { data: session } = useSession()
-
+  console.log(session)
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       {session ? (
