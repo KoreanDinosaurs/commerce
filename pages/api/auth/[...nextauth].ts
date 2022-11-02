@@ -13,7 +13,6 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.NEXT_PUBLIC_SECRET as string,
     }),
   ],
-  secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: 'database',
     maxAge: 60 * 60 * 24,
