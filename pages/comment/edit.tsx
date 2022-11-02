@@ -1,8 +1,9 @@
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
+import { convertFromRaw, convertToRaw, EditorState } from 'draft-js'
+
 import CustomEditor from '@components/Editor'
 import { Slider } from '@mantine/core'
-import { convertFromRaw, convertToRaw, EditorState } from 'draft-js'
-import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
 
 export default function Edit() {
   const router = useRouter()
