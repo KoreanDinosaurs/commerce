@@ -70,6 +70,46 @@ export default function MyPage() {
   )
 }
 const DetailItem = (props: OrderDetail) => {
+  const queryClient = useQueryClient()
+
+  const { mutate: updateOrderStatus } = useMutation(
+    (status: number) =>
+      fetch('/api/update-order-status', {
+        method: 'PATCH',
+        body: JSON.stringify({ id: props.id, status }),
+      }),
+    {
+      // onMutate: async (status) => {
+      //   await queryClient.cancelQueries([ORDER_QUERY_KEY])
+
+      //   // Snapshot the previous value
+      //   const previous = queryClient.getQueryData([ORDER_QUERY_KEY])
+
+      //   // Optimistically update to the new value
+      //   queryClient.setQueryData([ORDER_QUERY_KEY], (old: Orders[]) => {
+      //     return old?.map((order) => {
+      //       if (order.id == props.id) {
+      //         order.status = status
+      //       }
+      //     })
+      //   })
+
+      //   // Return a context object with the snapshotted value
+      //   return { previous }
+      // },
+      onError: (error, _, context: any) => {
+        queryClient.setQueryData([ORDER_QUERY_KEY], context.previous)
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries([ORDER_QUERY_KEY])
+      },
+    },
+  )
+
+  const handlePayment = () => {
+    updateOrderStatus(5)
+  }
+  const handleCancel = () => {}
   return (
     <div
       className="w-full flex flex-col p-4 rounded-md"
@@ -84,7 +124,7 @@ const DetailItem = (props: OrderDetail) => {
         </div>
 
         {props.orderItems.map((orderItem, idx) => (
-          <Item key={idx} {...orderItem} />
+          <Item key={idx} {...orderItem} status={props.status} />
         ))}
       </div>
       <div className="flex mt-4">
@@ -109,22 +149,29 @@ const DetailItem = (props: OrderDetail) => {
             주문일자:{' '}
             {format(new Date(props.createdAt), 'yyyy년 M월 d일 HH:mm:ss')}
           </span>
-          <Button style={{ backgroundColor: 'black', color: 'white' }}>
-            결제처리
-          </Button>
+          {props.status === 0 && (
+            <Button
+              style={{ backgroundColor: 'black', color: 'white' }}
+              onClick={handlePayment}
+            >
+              결제처리
+            </Button>
+          )}
         </div>
       </div>
     </div>
   )
 }
 
-const Item = (props: OrderItemDetail) => {
+const Item = (props: OrderItemDetail & { status: number }) => {
   const router = useRouter()
   const [quantity, setQuantity] = useState<number | undefined>(props.quantity)
   const amount = useMemo(() => {
     return quantity! * props.price
   }, [quantity, props.price])
-
+  const handleComment = () => {
+    router.push(`/comment/edit?orderItemId=${props.id}`)
+  }
   return (
     <div className="w-full flex p-4" style={{ borderBottom: '1px solid grey' }}>
       <div className="flex gap-4">
@@ -143,8 +190,22 @@ const Item = (props: OrderItemDetail) => {
           </div>
         </div>
       </div>
-      <div className="flex gap-2 ml-auto">
+      <div className="flex flex-col gap-2 ml-auto">
         <span>{amount.toLocaleString('ko-kr')} 원</span>
+        <div>
+          {props.status === 5 && (
+            <Button
+              style={{
+                backgroundColor: 'black',
+                color: 'white',
+                marginTop: 'auto',
+              }}
+              onClick={handleComment}
+            >
+              후기 작성
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   )
