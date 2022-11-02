@@ -2,7 +2,6 @@ import NextAuth, { NextAuthOptions } from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
 import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import { PrismaClient } from '@prisma/client'
-import { AdapterUser } from 'next-auth/adapters'
 
 const prisma = new PrismaClient()
 
@@ -14,6 +13,7 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.NEXT_PUBLIC_SECRET as string,
     }),
   ],
+  secret: process.env.NEXT_PUBLIC_SECRET,
   session: {
     strategy: 'database',
     maxAge: 60 * 60 * 24,
