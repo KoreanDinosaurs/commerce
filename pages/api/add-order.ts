@@ -49,6 +49,7 @@ export default async function handler(
     const { items, orderInfo } = JSON.parse(req.body)
     if (session == null) {
       res.status(400).json({ items: [], message: `no Session` })
+      return
     }
     const products = await addOrder(String(session?.id), items, orderInfo)
     res.status(200).json({ items: products, message: `Success` })
