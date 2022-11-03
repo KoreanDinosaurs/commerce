@@ -1,14 +1,14 @@
-import { CountControl } from '@components/CountControl'
-import styled from '@emotion/styled'
-import { Badge, Button } from '@mantine/core'
-import { Cart, OrderItem, Orders, products } from '@prisma/client'
-import { IconRefresh, IconX } from '@tabler/icons'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { CATEGORY_MAP } from 'constants/products'
-import { format } from 'date-fns'
-import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { format } from 'date-fns'
+
+import Image from 'next/image'
+import { IconX } from '@tabler/icons'
+import { CountControl } from '@components/CountControl'
+import { Badge, Button } from '@mantine/core'
+
+import { OrderItem, Orders } from '@prisma/client'
 
 interface OrderItemDetail extends OrderItem {
   name: string

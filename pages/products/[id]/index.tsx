@@ -18,15 +18,16 @@ import { IconHeartbeat, IconHeart, IconShoppingCart } from '@tabler/icons'
 import { CountControl } from '@components/CountControl'
 import { ORDER_QUERY_KEY } from 'pages/my'
 import CommentItem from '@components/CommentItem'
+import { server } from 'config'
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const product = await fetch(
-    `${process.env.SITE_URL}/api/get-product?id=${context.params?.id}`,
+    `${server}/api/get-product?id=${context.params?.id}`,
   )
     .then((res) => res.json())
     .then((data) => data.items)
   const comments = await fetch(
-    `${process.env.SITE_URL}/api/get-comments?productId=${context.params?.id}`,
+    `${server}/api/get-comments?productId=${context.params?.id}`,
   )
     .then((res) => res.json())
     .then((data) => data.items)
