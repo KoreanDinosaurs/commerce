@@ -8,7 +8,7 @@ import { IconX } from '@tabler/icons'
 import { CountControl } from '@components/CountControl'
 import { Badge, Button } from '@mantine/core'
 
-import { OrderItem, Orders } from '@prisma/client'
+import { Cart, OrderItem, Orders } from '@prisma/client'
 
 interface OrderItemDetail extends OrderItem {
   name: string
@@ -36,8 +36,6 @@ const ORDER_STATUS_MAP = [
 export const ORDER_QUERY_KEY = '/api/get-order'
 
 export default function MyPage() {
-  const router = useRouter()
-
   const { data } = useQuery<{ items: OrderDetail[] }, unknown, OrderDetail[]>(
     [`/api/get-order`],
     () =>
@@ -79,25 +77,26 @@ const DetailItem = (props: OrderDetail) => {
         body: JSON.stringify({ id: props.id, status }),
       }),
     {
-      // onMutate: async (status) => {
-      //   await queryClient.cancelQueries([ORDER_QUERY_KEY])
+      onMutate: async (status) => {
+        await queryClient.cancelQueries([ORDER_QUERY_KEY])
 
-      //   // Snapshot the previous value
-      //   const previous = queryClient.getQueryData([ORDER_QUERY_KEY])
+        // Snapshot the previous value
+        const previous = queryClient.getQueryData([ORDER_QUERY_KEY])
 
-      //   // Optimistically update to the new value
-      //   queryClient.setQueryData([ORDER_QUERY_KEY], (old: Orders[]) => {
-      //     return old?.map((order) => {
-      //       if (order.id == props.id) {
-      //         order.status = status
-      //       }
-      //     })
-      //   })
+        // Optimistically update to the new value
+        queryClient.setQueryData<Cart[]>([ORDER_QUERY_KEY], (old) =>
+          old?.map((c) => {
+            if (c.id == props.id) {
+              return { ...c, status }
+            }
+            return c
+          }),
+        )
 
-      //   // Return a context object with the snapshotted value
-      //   return { previous }
-      // },
-      onError: (error, _, context: any) => {
+        // Return a context object with the snapshotted value
+        return { previous }
+      },
+      onError: (_, __, context: any) => {
         queryClient.setQueryData([ORDER_QUERY_KEY], context.previous)
       },
       onSuccess: () => {
@@ -109,7 +108,9 @@ const DetailItem = (props: OrderDetail) => {
   const handlePayment = () => {
     updateOrderStatus(5)
   }
-  const handleCancel = () => {}
+  const handleCancel = () => {
+    updateOrderStatus(1)
+  }
   return (
     <div
       className="w-full flex flex-col p-4 rounded-md"
@@ -120,7 +121,7 @@ const DetailItem = (props: OrderDetail) => {
           <Badge color={props.status === 0 ? 'red' : ''} className="mb-1">
             {ORDER_STATUS_MAP[props.status + 1]}
           </Badge>
-          <IconX className="ml-auto" />
+          <IconX className="ml-auto" onClick={handleCancel} />
         </div>
 
         {props.orderItems.map((orderItem, idx) => (

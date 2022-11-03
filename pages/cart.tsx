@@ -225,7 +225,7 @@ const Item = (props: CartItem) => {
         // Return a context object with the snapshotted value
         return { previous }
       },
-      onError: (error, _, context: any) => {
+      onError: (_, __, context: any) => {
         queryClient.setQueryData(['/api/get-cart'], context.previous)
       },
       onSuccess: () => {
@@ -256,7 +256,7 @@ const Item = (props: CartItem) => {
         // Return a context object with the snapshotted value
         return { previous }
       },
-      onError: (error, _, context: any) => {
+      onError: (_, __, context: any) => {
         queryClient.setQueryData(['/api/get-cart'], context.previous)
       },
       onSuccess: () => {

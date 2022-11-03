@@ -92,7 +92,7 @@ export default function Products(props: {
         // Return a context object with the snapshotted value
         return { previous }
       },
-      onError: (error, _, context: any) => {
+      onError: (_, __, context: any) => {
         queryClient.setQueryData(['wishList'], context.previous)
       },
       onSuccess: () => {

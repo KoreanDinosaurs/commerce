@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { PrismaClient, Cart, OrderItem, Orders } from '@prisma/client'
+import { PrismaClient, OrderItem, Orders } from '@prisma/client'
 import { authOptions } from './auth/[...nextauth]'
 import { unstable_getServerSession } from 'next-auth'
 
