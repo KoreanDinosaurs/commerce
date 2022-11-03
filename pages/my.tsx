@@ -9,6 +9,7 @@ import { CountControl } from '@components/CountControl'
 import { Badge, Button } from '@mantine/core'
 
 import { Cart, OrderItem, Orders } from '@prisma/client'
+import Head from 'next/head'
 
 interface OrderItemDetail extends OrderItem {
   name: string
@@ -46,6 +47,9 @@ export default function MyPage() {
 
   return (
     <>
+      <Head>
+        <title>나의 주문 내역</title>
+      </Head>
       <span className="text-2xl mb-3">주문내역 ({data ? data.length : 0})</span>
       <div className="flex flex-col">
         <div className="flex gap-10">

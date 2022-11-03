@@ -3,8 +3,9 @@ import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
 
 import Image from 'next/image'
-import { Input, Pagination, SegmentedControl, Select } from '@mantine/core'
+import Head from '@components/Head'
 import { IconSearch } from '@tabler/icons'
+import { Input, Pagination, SegmentedControl, Select } from '@mantine/core'
 
 import useDebounce from 'hooks/useDebounce'
 import { CATEGORY_MAP, FILTERS, TAKE } from 'constants/products'
@@ -70,84 +71,91 @@ export default function Home() {
   }
 
   return (
-    <div className="mt-10 mb-36">
-      <div className="mb-4">
-        <Input
-          icon={<IconSearch />}
-          placeholder="Search Item You Want"
-          value={keyword}
-          onChange={handleChange}
-        />
-      </div>
-      <div className="mb-4 flex justify-between align-middle">
-        {categories && (
-          <div className="mb-4">
-            <SegmentedControl
-              value={selectedCategory}
-              onChange={setCategory}
-              onClick={() => setPage(1)}
-              data={[
-                { label: 'ALL', value: '-1' },
-                ...categories.map((category) => {
-                  return { label: category.name, value: String(category.id) }
-                }),
-              ]}
-              color="dark"
-            />
+    <>
+      <Head
+        title="Next Commerce"
+        desc="Next Commerce입니다."
+        image={'/public/image/next.png'}
+      />
+      <div className="mt-10 mb-36">
+        <div className="mb-4">
+          <Input
+            icon={<IconSearch />}
+            placeholder="Search Item You Want"
+            value={keyword}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="mb-4 flex justify-between align-middle">
+          {categories && (
+            <div className="mb-4">
+              <SegmentedControl
+                value={selectedCategory}
+                onChange={setCategory}
+                onClick={() => setPage(1)}
+                data={[
+                  { label: 'ALL', value: '-1' },
+                  ...categories.map((category) => {
+                    return { label: category.name, value: String(category.id) }
+                  }),
+                ]}
+                color="dark"
+              />
+            </div>
+          )}
+          <Select value={selectedFilter} onChange={setFilter} data={FILTERS} />
+        </div>
+        {products && (
+          <div className="grid grid-cols-3 gap-5">
+            {products.map((item) => {
+              return (
+                <div
+                  key={item.id}
+                  onClick={() => router.push(`/products/${item.id}`)}
+                >
+                  <Image
+                    className="rounded"
+                    src={item.image_url ?? ''}
+                    width={300}
+                    height={300}
+                    layout="responsive"
+                    alt={item.name}
+                    placeholder="blur"
+                    blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mMUEhaqBwABLgC4ehE0xwAAAABJRU5ErkJggg=="
+                  />
+                  <div className="flex gap-4">
+                    <span className="whitespace-nowrap overflow-hidden text-ellipsis">
+                      {item.name}
+                    </span>
+                    <span className="ml-auto whitespace-nowrap">{`${item.price.toLocaleString(
+                      'ko-KR',
+                    )}원`}</span>
+                  </div>
+                  <span className="text-zinc-400">
+                    {CATEGORY_MAP[item.category_id - 1]}
+                  </span>
+                </div>
+              )
+            })}
           </div>
         )}
-        <Select value={selectedFilter} onChange={setFilter} data={FILTERS} />
-      </div>
-      {products && (
-        <div className="grid grid-cols-3 gap-5">
-          {products.map((item) => {
-            return (
-              <div
-                key={item.id}
-                onClick={() => router.push(`/products/${item.id}`)}
-              >
-                <Image
-                  className="rounded"
-                  src={item.image_url ?? ''}
-                  width={300}
-                  height={300}
-                  layout="responsive"
-                  alt={item.name}
-                  placeholder="blur"
-                  blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mMUEhaqBwABLgC4ehE0xwAAAABJRU5ErkJggg=="
-                />
-                <div className="flex gap-4">
-                  <span className="whitespace-nowrap overflow-hidden text-ellipsis">
-                    {item.name}
-                  </span>
-                  <span className="ml-auto whitespace-nowrap">{`${item.price.toLocaleString(
-                    'ko-KR',
-                  )}원`}</span>
-                </div>
-                <span className="text-zinc-400">
-                  {CATEGORY_MAP[item.category_id - 1]}
-                </span>
-              </div>
-            )
-          })}
-        </div>
-      )}
-      {products && !products.length && keyword && (
-        <p className="mb-4">
-          {`'${keyword}'`}에 대한 검색 결과가 존재하지 않습니다.
-        </p>
-      )}
-      <div className="w-full flex mt-5">
-        {total && (
-          <Pagination
-            className="m-auto"
-            page={activePage}
-            onChange={setPage}
-            total={total}
-            color="dark"
-          />
+        {products && !products.length && keyword && (
+          <p className="mb-4">
+            {`'${keyword}'`}에 대한 검색 결과가 존재하지 않습니다.
+          </p>
         )}
+        <div className="w-full flex mt-5">
+          {total && (
+            <Pagination
+              className="m-auto"
+              page={activePage}
+              onChange={setPage}
+              total={total}
+              color="dark"
+            />
+          )}
+        </div>
       </div>
-    </div>
+    </>
   )
 }

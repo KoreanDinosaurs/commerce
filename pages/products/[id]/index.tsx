@@ -3,7 +3,9 @@ import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { convertFromRaw } from 'draft-js'
 
+import Head from 'components/Head'
 import Editor from '@components/Editor'
+import CommentItem from '@components/CommentItem'
 import Carousel from 'nuka-carousel/lib/carousel'
 
 import { EditorState } from 'draft-js'
@@ -17,9 +19,7 @@ import { Button } from '@mantine/core'
 import { IconHeartbeat, IconHeart, IconShoppingCart } from '@tabler/icons'
 import { CountControl } from '@components/CountControl'
 import { ORDER_QUERY_KEY } from 'pages/my'
-import CommentItem from '@components/CommentItem'
 import { server } from 'config'
-import Head from 'next/head'
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const product = await fetch(
@@ -168,13 +168,11 @@ export default function Products(props: {
   }
   return (
     <>
-      <Head>
-        <title>{props.product.name}</title>
-        <meta name="description" content={props.product.contents!} />
-        <meta property="og:title" content={props.product.name} />
-        <meta property="og:description" content={props.product.contents!} />
-        <meta property="og:image" content={props.product.image_url!} />
-      </Head>
+      <Head
+        title={props.product.name}
+        desc={props.product.contents!}
+        image={props.product.image_url!}
+      />
       {product !== null && productId !== null ? (
         <div className="flex flex-row">
           <div style={{ maxWidth: 600, marginRight: 52 }}>

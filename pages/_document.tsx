@@ -1,9 +1,11 @@
-import { Html, Head, Main, NextScript } from 'next/document'
+import { Html, Main, Head, NextScript } from 'next/document'
 
 export default function Document() {
   return (
     <Html lang="ko">
-      <Head />
+      <Head>
+        <meta name="description" content="Next Commerce" />
+      </Head>
       <body>
         <Main />
         <NextScript />

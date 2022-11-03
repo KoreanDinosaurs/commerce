@@ -12,6 +12,7 @@ import { CATEGORY_MAP } from 'constants/products'
 import { Cart, OrderItem, products } from '@prisma/client'
 
 import styled from '@emotion/styled'
+import Head from 'next/head'
 
 interface CartItem extends Cart {
   name: string
@@ -276,29 +277,37 @@ const Item = (props: CartItem) => {
     alert(`장바구니에서 ${props.name} 삭제`)
   }
   return (
-    <div className="w-full flex p-4" style={{ borderBottom: '1px solid grey' }}>
-      <div className="flex gap-4">
-        <Image
-          src={props.image_url}
-          width={155}
-          height={155}
-          alt={props.name}
-          onClick={() => router.push(`/products/${props.productId}`)}
-        />
-        <div className="flex flex-col ml-4">
-          <span className="font-semibold mb-2">{props.name}</span>
-          <span>가격: {props.price.toLocaleString('ko-kr')} 원</span>
-          <div className="flex items-center space-x-4 mt-auto">
-            <CountControl value={quantity} setValue={setQuantity} max={20} />
-            <IconRefresh onClick={handleUpdate} />
+    <>
+      <Head>
+        <title>나의 장바구니</title>
+      </Head>
+      <div
+        className="w-full flex p-4"
+        style={{ borderBottom: '1px solid grey' }}
+      >
+        <div className="flex gap-4">
+          <Image
+            src={props.image_url}
+            width={155}
+            height={155}
+            alt={props.name}
+            onClick={() => router.push(`/products/${props.productId}`)}
+          />
+          <div className="flex flex-col ml-4">
+            <span className="font-semibold mb-2">{props.name}</span>
+            <span>가격: {props.price.toLocaleString('ko-kr')} 원</span>
+            <div className="flex items-center space-x-4 mt-auto">
+              <CountControl value={quantity} setValue={setQuantity} max={20} />
+              <IconRefresh onClick={handleUpdate} />
+            </div>
           </div>
         </div>
+        <div className="flex gap-2 ml-auto">
+          <span>{amount.toLocaleString('ko-kr')} 원</span>
+          <IconX onClick={handleDelete} />
+        </div>
       </div>
-      <div className="flex gap-2 ml-auto">
-        <span>{amount.toLocaleString('ko-kr')} 원</span>
-        <IconX onClick={handleDelete} />
-      </div>
-    </div>
+    </>
   )
 }
 
