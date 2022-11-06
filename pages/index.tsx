@@ -12,6 +12,8 @@ import { CATEGORY_MAP, FILTERS, TAKE } from 'constants/products'
 
 import { categories, products } from '@prisma/client'
 
+import ProductSkeleton from '@components/Skeleton/ProductSkeleton'
+
 export default function Home() {
   const router = useRouter()
   const [activePage, setPage] = useState(1)
@@ -21,22 +23,16 @@ export default function Home() {
 
   const debouncedKeyword = useDebounce<string>(keyword)
 
-  const { data: categories } = useQuery<
-    { items: categories[] },
-    unknown,
-    categories[]
-  >(
-    [`/api/get-categories`],
-    () => fetch(`/api/get-categories`).then((res) => res.json()),
-    {
-      select: (data) => data.items,
-    },
-  )
+  const { data: categories } = useQuery<categories[]>({
+    queryKey: ['categories'],
+    queryFn: () =>
+      fetch('api/get-categories')
+        .then((res) => res.json())
+        .then((data) => data.items),
+  })
 
   const { data: total } = useQuery(
-    [
-      `/api/get-products-count?category=${selectedCategory}&contains=${debouncedKeyword}`,
-    ],
+    ['products-count', selectedCategory, debouncedKeyword],
     () =>
       fetch(
         `/api/get-products-count?category=${selectedCategory}&contains=${debouncedKeyword}`,
@@ -45,25 +41,25 @@ export default function Home() {
         .then((data) => Math.ceil(data.items / TAKE)),
   )
 
-  const { data: products } = useQuery<
-    { items: products[] },
-    unknown,
-    products[]
-  >(
+  const { data: products, isLoading } = useQuery<products[]>(
     [
-      `/api/get-products?skip=${
-        TAKE * (activePage - 1)
-      }&take=${TAKE}&category=${selectedCategory}&orderBy=${selectedFilter}&contains=${debouncedKeyword}`,
+      'products',
+      TAKE,
+      activePage,
+      selectedCategory,
+      selectedFilter,
+      debouncedKeyword,
     ],
     () =>
       fetch(
         `/api/get-products?skip=${
           TAKE * (activePage - 1)
         }&take=${TAKE}&category=${selectedCategory}&orderBy=${selectedFilter}&contains=${debouncedKeyword}`,
-      ).then((res) => res.json()),
-    {
-      select: (data) => data.items,
-    },
+      )
+        .then((res) => res.json())
+        .then(async (data) => {
+          return data.items
+        }),
   )
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,6 +73,7 @@ export default function Home() {
         desc="Next Commerce입니다."
         image={'/public/image/next.png'}
       />
+
       <div className="mt-10 mb-36">
         <div className="mb-4">
           <Input
@@ -105,6 +102,13 @@ export default function Home() {
           )}
           <Select value={selectedFilter} onChange={setFilter} data={FILTERS} />
         </div>
+        {isLoading && (
+          <div className="grid grid-cols-3 gap-5">
+            {Array.from({ length: 9 }).map((_, idx) => (
+              <ProductSkeleton key={idx} />
+            ))}
+          </div>
+        )}
         {products && (
           <div className="grid grid-cols-3 gap-5">
             {products.map((item) => {
@@ -116,8 +120,8 @@ export default function Home() {
                   <Image
                     className="rounded"
                     src={item.image_url ?? ''}
-                    width={300}
-                    height={300}
+                    width={40}
+                    height={40}
                     layout="responsive"
                     alt={item.name}
                     placeholder="blur"
