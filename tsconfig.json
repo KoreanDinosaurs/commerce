@@ -22,7 +22,13 @@
     },
     "types": ["@emotion/react/types/css-prop", "node"]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "types/**/*.ts",
+    ".storybook/stories/Button.stories.tsx"
+  ],
   "exclude": ["node_modules"],
   "ts-node": { "compilerOptions": { "module": "commonjs" } }
 }

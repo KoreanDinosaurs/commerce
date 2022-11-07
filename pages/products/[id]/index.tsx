@@ -7,6 +7,7 @@ import Head from 'components/Head'
 import Editor from '@components/Editor'
 import CommentItem from '@components/CommentItem'
 import Carousel from 'nuka-carousel/lib/carousel'
+import Button from '@components/Button/Button'
 
 import { EditorState } from 'draft-js'
 import { GetServerSidePropsContext } from 'next'
@@ -15,7 +16,6 @@ import { format } from 'date-fns'
 import { CATEGORY_MAP } from 'constants/products'
 import { useSession } from 'next-auth/react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Button } from '@mantine/core'
 import { IconHeartbeat, IconHeart, IconShoppingCart } from '@tabler/icons'
 import { CountControl } from '@components/CountControl'
 import { ORDER_QUERY_KEY } from 'pages/my'
@@ -224,11 +224,8 @@ export default function Products(props: {
             </div>
             <div className="flex gap-4">
               <Button
-                leftIcon={<IconShoppingCart />}
-                style={{ backgroundColor: 'black' }}
-                radius="xl"
-                size="md"
-                styles={{ root: { paddingRight: 14, height: 40 } }}
+                label="장바구니"
+                leftIcon={<IconShoppingCart width={20} height={20} />}
                 onClick={() => {
                   if (session == null) {
                     alert('로그인이 필요해요')
@@ -237,11 +234,13 @@ export default function Products(props: {
                   }
                   validate('cart')
                 }}
-              >
-                장바구니
-              </Button>
+                primary
+                rounded
+                size="medium"
+              />
               <Button
                 disabled={wishList == null}
+                label="찜하기"
                 leftIcon={
                   isWished ? (
                     <IconHeart size={20} stroke={1.5} />
@@ -249,10 +248,7 @@ export default function Products(props: {
                     <IconHeartbeat size={20} stroke={1.5} />
                   )
                 }
-                style={{ backgroundColor: isWished ? 'red' : 'grey' }}
-                radius="xl"
-                size="md"
-                styles={{ root: { paddingRight: 14, height: 40 } }}
+                backgroundColor={isWished ? 'red' : 'grey'}
                 onClick={() => {
                   if (session == null) {
                     alert('로그인이 필요해요')
@@ -261,15 +257,13 @@ export default function Products(props: {
                   }
                   mutate(productId as string)
                 }}
-              >
-                찜하기
-              </Button>
+                primary
+                rounded
+                size="medium"
+              />
             </div>
             <Button
-              style={{ backgroundColor: 'black' }}
-              radius="xl"
-              size="md"
-              styles={{ root: { paddingRight: 14, height: 40 } }}
+              label="구매하기"
               onClick={() => {
                 if (session == null) {
                   alert('로그인이 필요해요')
@@ -278,9 +272,11 @@ export default function Products(props: {
                 }
                 validate('order')
               }}
-            >
-              구매하기
-            </Button>
+              backgroundColor="black"
+              primary
+              rounded
+              size="medium"
+            />
             <div className="text-sm  text-zinc-300">
               등록: {format(new Date(product.createdAt), 'yyyy년 M월 d일')}
             </div>
