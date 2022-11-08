@@ -1,4 +1,4 @@
-import '../styles/globals.css'
+import '../styles/globals.scss'
 
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
 import { SessionProvider } from 'next-auth/react'

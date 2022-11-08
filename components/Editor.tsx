@@ -29,20 +29,22 @@ export default function CustomEditor({
   noPadding?: boolean
 }) {
   return (
-    <Wrapper readOnly={readOnly} noPadding={noPadding}>
-      <Editor
-        readOnly={readOnly}
-        editorState={editorState}
-        toolbarHidden={readOnly}
-        toolbarClassName="wrapper-class"
-        wrapperClassName="editorToolbar-hidden"
-        editorClassName="editor-class"
-        toolbar={{ options: ['inline', 'list', 'textAlign', 'link'] }}
-        localization={{ locale: 'ko' }}
-        onEditorStateChange={onEditorStateChange}
-      />
-      {!readOnly && <Button onClick={onSave}>Save</Button>}
-    </Wrapper>
+    <>
+      <Wrapper readOnly={readOnly} noPadding={noPadding}>
+        <Editor
+          readOnly={readOnly}
+          editorState={editorState}
+          toolbarHidden={readOnly}
+          toolbarClassName="wrapper-class"
+          wrapperClassName="editorToolbar-hidden"
+          editorClassName="editor-class"
+          toolbar={{ options: ['inline', 'list', 'textAlign', 'link'] }}
+          localization={{ locale: 'ko' }}
+          onEditorStateChange={onEditorStateChange}
+        />
+        {!readOnly && <Button onClick={onSave}>Save</Button>}
+      </Wrapper>
+    </>
   )
 }
 

@@ -14,14 +14,31 @@ async function getComments(productId: number) {
     let response = []
 
     for (const orderItem of orderItems) {
+      const productInfo = await prisma.products.findUnique({
+        where: {
+          id: orderItem.productId,
+        },
+      })
       const res = await prisma.comment.findUnique({
         where: {
           orderItemId: orderItem.id,
         },
       })
-      res && response.push({ ...orderItem, ...res })
+      res &&
+        response.push({
+          quantity: orderItem.quantity,
+          amount: orderItem.amount,
+          price: orderItem.price,
+          contents: res.contents,
+          rate: res.rate,
+          updatedAt: res.updatedAt,
+          userName: res.userName,
+          userImage: res.userImage,
+          productImage: productInfo?.image_url,
+          productName: productInfo?.name,
+        })
     }
-    console.log('결과 :', response)
+    console.log(response)
     return response
   } catch (error) {
     console.error(error)

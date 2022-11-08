@@ -17,21 +17,50 @@ async function updateComment({
   contents: string
 }) {
   try {
-    const response = await prisma.comment.upsert({
+    const userInfo = await prisma.user.findUnique({
       where: {
-        orderItemId,
-      },
-      update: {
-        contents,
-        rate,
-      },
-      create: {
-        userId,
-        orderItemId,
-        contents,
-        rate,
+        id: userId,
       },
     })
+    let response
+    if (userInfo !== null) {
+      response = await prisma.comment.upsert({
+        where: {
+          orderItemId,
+        },
+        update: {
+          contents,
+          rate,
+          userName: userInfo.name,
+          userImage: userInfo.image,
+        },
+        create: {
+          userId,
+          orderItemId,
+          contents,
+          rate,
+          userName: userInfo.name,
+          userImage: userInfo.image,
+        },
+      })
+    } else {
+      response = await prisma.comment.upsert({
+        where: {
+          orderItemId,
+        },
+        update: {
+          contents,
+          rate,
+        },
+        create: {
+          userId,
+          orderItemId,
+          contents,
+          rate,
+        },
+      })
+    }
+
     console.log(response)
     return response
   } catch (error) {

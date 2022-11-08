@@ -29,13 +29,6 @@ model products {
   @@index([category_id])
 }
 
-model user {
-  id String @id @default(cuid())
-  name String?
-  email String? @unique
-  image String?
-}
-
 model Account {
   id                 String  @id @default(cuid())
   userId             String
@@ -120,6 +113,8 @@ model Comment {
   orderItemId Int @unique
   rate Int
   contents String?
-  images String?
+  images String? 
+  userImage String? @db.VarChar(255)
+  userName String? @db.VarChar(255)
   updatedAt DateTime @updatedAt
 }

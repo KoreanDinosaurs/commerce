@@ -10,8 +10,15 @@ export default {
   component: Button,
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
   argTypes: {
-    backgroundColor: { control: 'color' },
+    backgroundColor: {
+      control: {
+        type: 'color',
+        presetColors: ['#ff0000', '#00ff00', '#0000ff'],
+      },
+    },
     rounded: { control: 'boolean', defaultValue: true },
+    disabled: { control: 'boolean', defaultValue: false },
+    width: { control: 'text' },
     size: {
       defaultValue: 'medium',
     },

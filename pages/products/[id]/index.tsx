@@ -5,13 +5,13 @@ import { convertFromRaw } from 'draft-js'
 
 import Head from 'components/Head'
 import Editor from '@components/Editor'
-import CommentItem from '@components/CommentItem'
 import Carousel from 'nuka-carousel/lib/carousel'
 import Button from '@components/Button/Button'
+import { CommentProps, Comment as CommentItem } from '@components/Comment'
 
 import { EditorState } from 'draft-js'
 import { GetServerSidePropsContext } from 'next'
-import { Cart, OrderItem, products, Comment } from '@prisma/client'
+import { Cart, OrderItem, products } from '@prisma/client'
 import { format } from 'date-fns'
 import { CATEGORY_MAP } from 'constants/products'
 import { useSession } from 'next-auth/react'
@@ -40,11 +40,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 }
 
-export interface CommentItemType extends Comment, OrderItem {}
-
 export default function Products(props: {
   product: products & { images: string[] }
-  comments: CommentItemType[]
+  comments: CommentProps[]
 }) {
   const [index, setIndex] = useState(0)
   const [quantity, setQuantity] = useState<number | undefined>(1)
@@ -285,13 +283,15 @@ export default function Products(props: {
       ) : (
         <div>로딩중</div>
       )}
-      <div>
-        <p className="text-2xl font-semibold">후기</p>
-        {props.comments &&
-          props.comments.map((comment, idx) => (
-            <CommentItem key={idx} item={comment} />
-          ))}
-      </div>
+      {!!props.comments.length && (
+        <div>
+          <p className="text-xl font-semibold mb-4">후기</p>
+          {props.comments &&
+            props.comments.map((comment, idx) => (
+              <CommentItem key={idx} item={comment} />
+            ))}
+        </div>
+      )}
     </>
   )
 }

@@ -5,14 +5,13 @@ import { useRouter } from 'next/router'
 import Image from 'next/image'
 import Head from '@components/Head'
 import { IconSearch } from '@tabler/icons'
+import ProductSkeleton from '@components/Skeleton/ProductSkeleton'
 import { Input, Pagination, SegmentedControl, Select } from '@mantine/core'
 
 import useDebounce from 'hooks/useDebounce'
 import { CATEGORY_MAP, FILTERS, TAKE } from 'constants/products'
 
 import { categories, products } from '@prisma/client'
-
-import ProductSkeleton from '@components/Skeleton/ProductSkeleton'
 
 export default function Home() {
   const router = useRouter()
@@ -73,7 +72,6 @@ export default function Home() {
         desc="Next Commerce입니다."
         image={'/public/image/next.png'}
       />
-
       <div className="mt-10 mb-36">
         <div className="mb-4">
           <Input
