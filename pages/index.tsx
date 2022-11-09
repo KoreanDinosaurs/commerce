@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
 
@@ -65,6 +65,24 @@ export default function Home() {
     setKeyword(e.target.value)
   }
 
+  const highlightedText = useCallback((text: string, query: string) => {
+    if (query === '') return text
+    if (query !== '') {
+      const parts = text.split(new RegExp(`(${query})`, 'gi'))
+      return (
+        <>
+          {parts.map((part, index) =>
+            part.toLowerCase() === query.toLowerCase() ? (
+              <mark key={index}>{part}</mark>
+            ) : (
+              part
+            ),
+          )}
+        </>
+      )
+    }
+  }, [])
+
   return (
     <>
       <Head
@@ -127,7 +145,7 @@ export default function Home() {
                   />
                   <div className="flex gap-4">
                     <span className="whitespace-nowrap overflow-hidden text-ellipsis">
-                      {item.name}
+                      {highlightedText(item.name, debouncedKeyword)}
                     </span>
                     <span className="ml-auto whitespace-nowrap">{`${item.price.toLocaleString(
                       'ko-KR',
@@ -147,7 +165,7 @@ export default function Home() {
           </p>
         )}
         <div className="w-full flex mt-5">
-          {total && (
+          {!!total && (
             <Pagination
               className="m-auto"
               page={activePage}

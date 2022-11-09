@@ -13,8 +13,8 @@ export default function Header() {
     <div className={s.Container}>
       <Image
         src={'/image/brand-logo.png'}
-        width={200}
-        height={100}
+        width={150}
+        height={75}
         layout="fixed"
         alt="브랜드 로고 이미지"
         onClick={() => router.push('/')}

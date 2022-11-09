@@ -207,7 +207,6 @@ export default function Products(props: {
             </div>
             {editorState && <Editor editorState={editorState} readOnly />}
           </div>
-
           <div className="flex flex-col space-y-6">
             <div className="text-lg text-zinc-400">
               {CATEGORY_MAP[product.category_id - 1]}
@@ -285,7 +284,7 @@ export default function Products(props: {
       )}
       {!!props.comments.length && (
         <div className="px-60">
-          <p className="text-xl font-semibold mb-4">후기</p>
+          <p className="text-xl font-semibold mb-4">구매후기</p>
           {props.comments &&
             props.comments.map((comment, idx) => (
               <CommentItem key={idx} item={comment} />
