@@ -44,12 +44,13 @@ export default function Products(props: {
   product: products & { images: string[] }
   comments: CommentProps[]
 }) {
+  const router = useRouter()
+  const queryClient = useQueryClient()
+  const { id: productId } = router.query
+  const { data: session } = useSession()
+
   const [index, setIndex] = useState(0)
   const [quantity, setQuantity] = useState<number | undefined>(1)
-  const { data: session } = useSession()
-  const router = useRouter()
-  const { id: productId } = router.query
-  const queryClient = useQueryClient()
   const [editorState] = useState<EditorState | undefined>(() =>
     props.product.contents
       ? EditorState.createWithContent(
@@ -57,6 +58,7 @@ export default function Products(props: {
         )
       : EditorState.createEmpty(),
   )
+
   const { data: wishList }: { data: string[] | undefined } = useQuery(
     ['wishList'],
     () =>
@@ -64,6 +66,7 @@ export default function Products(props: {
         .then((res) => res.json())
         .then((data) => data.items),
   )
+
   const { mutate } = useMutation<string, unknown, string>(
     (productId) =>
       fetch('/api/update-wishlist', {
@@ -87,8 +90,6 @@ export default function Products(props: {
               : old.concat(String(productId))
             : [],
         )
-
-        // Return a context object with the snapshotted value
         return { previous }
       },
       onError: (_, __, context: any) => {

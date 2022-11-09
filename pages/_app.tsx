@@ -11,7 +11,7 @@ import type { AppProps } from 'next/app'
 function App({ Component, pageProps }: AppProps<{ session: Session }>) {
   const queryClient = new QueryClient({
     defaultOptions: {
-      queries: { staleTime: Infinity },
+      queries: { staleTime: Infinity, retry: 0 },
     },
   })
 

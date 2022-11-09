@@ -12,7 +12,7 @@ async function getWishList(userId: string) {
         userId: userId,
       },
     })
-    return response?.productIds.split(',')
+    return response ? response.productIds.split(',') : []
   } catch (error) {
     console.error(error)
   }
