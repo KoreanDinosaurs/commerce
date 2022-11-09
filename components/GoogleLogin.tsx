@@ -10,13 +10,17 @@ export default function GoogleLogin() {
         <>
           Signed in as {session.user?.email} <br />
           <br />
-          <Button onClick={() => signOut()}>Sign out</Button>
+          <Button onClick={() => signOut({ callbackUrl: '/' })}>
+            Sign out
+          </Button>
         </>
       ) : (
         <>
           Not signed in <br />
           <br />
-          <Button onClick={() => signIn()}>Sign in</Button>
+          <Button onClick={() => signIn('google', { callbackUrl: '/' })}>
+            Sign in
+          </Button>
         </>
       )}
     </div>
