@@ -3,9 +3,9 @@ import Header from './Header'
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
-    <div className="px-36">
+    <>
       <Header />
-      <main>{children}</main>
-    </div>
+      <main className="px-32">{children}</main>
+    </>
   )
 }

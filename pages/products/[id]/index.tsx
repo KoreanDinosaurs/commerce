@@ -172,7 +172,7 @@ export default function Products(props: {
         image={props.product.image_url!}
       />
       {product !== null && productId !== null ? (
-        <div className="flex flex-row">
+        <div className="flex flex-row px-60">
           <div style={{ maxWidth: 600, marginRight: 52 }}>
             <Carousel
               animation="fade"
@@ -208,7 +208,7 @@ export default function Products(props: {
             {editorState && <Editor editorState={editorState} readOnly />}
           </div>
 
-          <div style={{ maxWidth: 600 }} className="flex flex-col space-y-6">
+          <div className="flex flex-col space-y-6">
             <div className="text-lg text-zinc-400">
               {CATEGORY_MAP[product.category_id - 1]}
             </div>
@@ -284,7 +284,7 @@ export default function Products(props: {
         <div>로딩중</div>
       )}
       {!!props.comments.length && (
-        <div>
+        <div className="px-60">
           <p className="text-xl font-semibold mb-4">후기</p>
           {props.comments &&
             props.comments.map((comment, idx) => (
