@@ -79,10 +79,8 @@ export default function Products(props: {
       onMutate: async (productId) => {
         await queryClient.cancelQueries(['wishList'])
 
-        // Snapshot the previous value
         const previous = queryClient.getQueryData(['wishList'])
 
-        // Optimistically update to the new value
         queryClient.setQueryData<string[]>(['wishList'], (old) =>
           old
             ? old.includes(String(productId))
@@ -100,6 +98,7 @@ export default function Products(props: {
       },
     },
   )
+
   const { mutate: addCart } = useMutation<
     unknown,
     unknown,
@@ -121,6 +120,7 @@ export default function Products(props: {
       },
     },
   )
+
   const { mutate: addOrder } = useMutation<
     unknown,
     unknown,
@@ -143,8 +143,10 @@ export default function Products(props: {
       },
     },
   )
+
   const product = props.product
   const isWished = wishList ? wishList.includes(productId as string) : false
+
   const validate = (type: 'cart' | 'order') => {
     if (type == 'cart') {
       alert('장바구니로 이동')
@@ -165,6 +167,7 @@ export default function Products(props: {
       ])
     }
   }
+
   return (
     <>
       <Head
