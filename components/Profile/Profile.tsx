@@ -17,6 +17,14 @@ interface ProfileProps {
    */
   rounded?: boolean
   /**
+   * Please fill it out in case the image cannot be displayed!
+   */
+  alt: string
+  /**
+   * How do you set the image layout?
+   */
+  layout?: 'fixed' | 'fill' | 'intrinsic' | 'responsive' | undefined
+  /**
    * Optional click handler
    */
   onClick?: () => void
@@ -26,6 +34,8 @@ export default function Profile({
   size = 'medium',
   src = 'image/default-profile.jpeg',
   rounded = true,
+  alt,
+  layout = 'fixed',
   ...props
 }: ProfileProps) {
   const shape = rounded ? 'storybook-image--rounded' : ''
@@ -50,10 +60,10 @@ export default function Profile({
       <Image
         src={src}
         className={s[shape]}
-        alt="사용자 프로필 이미지"
+        alt={alt}
         width={imageSize}
         height={imageSize}
-        layout="fixed"
+        layout={layout}
         {...props}
       />
     </>

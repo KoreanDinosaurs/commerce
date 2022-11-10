@@ -8,9 +8,6 @@ export default {
   component: Profile,
   argTypes: {
     rounded: { control: 'boolean', defaultValue: true },
-    size: {
-      defaultValue: 'medium',
-    },
   },
 } as ComponentMeta<typeof Profile>
 

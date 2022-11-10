@@ -1,13 +1,16 @@
 import { useRouter } from 'next/router'
-import { useSession } from 'next-auth/react'
 
 import Image from 'next/image'
 import { IconHeart, IconShoppingCart, IconUser } from '@tabler/icons'
 
 import s from './Header.module.scss'
+import Profile from '@components/Profile'
 
-export default function Header() {
-  const { data: session } = useSession()
+interface HeaderProps {
+  session: any
+}
+
+export default function Header({ session }: HeaderProps) {
   const router = useRouter()
   return (
     <div className={s.Container}>
@@ -23,14 +26,13 @@ export default function Header() {
         <IconHeart onClick={() => router.push('/wishlist')} />
         <IconShoppingCart onClick={() => router.push('/cart')} />
         {session ? (
-          <Image
+          <Profile
             src={session.user?.image!}
-            width={30}
-            height={30}
-            layout="fixed"
-            style={{ borderRadius: '50%' }}
-            alt="profile image"
             onClick={() => router.push('/my')}
+            // layout="fixed"
+            rounded
+            // alt="profile image"
+            size="small"
           />
         ) : (
           <IconUser onClick={() => router.push('/auth/login')} />
