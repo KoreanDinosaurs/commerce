@@ -29,9 +29,9 @@ export default function Header({ session }: HeaderProps) {
           <Profile
             src={session.user?.image!}
             onClick={() => router.push('/my')}
-            // layout="fixed"
+            layout="fixed"
             rounded
-            // alt="profile image"
+            alt="profile image"
             size="small"
           />
         ) : (

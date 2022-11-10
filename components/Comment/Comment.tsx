@@ -33,7 +33,7 @@ export interface CommentProps {
 export function Comment({ item }: { item: CommentProps }) {
   return (
     <div className={s.Container}>
-      <Profile src={item.userImage} rounded />
+      <Profile src={item.userImage} rounded alt="프로필 이미지" />
       <div className={s.Wrap}>
         <div>
           <span>{item.userName}</span>

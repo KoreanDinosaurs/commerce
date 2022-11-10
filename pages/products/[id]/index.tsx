@@ -6,7 +6,7 @@ import { convertFromRaw } from 'draft-js'
 import Head from 'components/Head'
 import Editor from '@components/Editor'
 import Carousel from 'nuka-carousel/lib/carousel'
-import Button from '@components/Button/Button'
+import Button from '@components/Button'
 import { CommentProps, Comment as CommentItem } from '@components/Comment'
 
 import { EditorState } from 'draft-js'

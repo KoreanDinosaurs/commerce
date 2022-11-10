@@ -2,11 +2,11 @@ import dynamic from 'next/dynamic'
 
 import { EditorProps, EditorState } from 'react-draft-wysiwyg'
 import { Dispatch, SetStateAction } from 'react'
-import Button from './Button'
 
 import styled from '@emotion/styled'
 
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
+import Button from './Button'
 
 const Editor = dynamic<EditorProps>(
   () => import('react-draft-wysiwyg').then((module) => module.Editor),
@@ -42,7 +42,9 @@ export default function CustomEditor({
           localization={{ locale: 'ko' }}
           onEditorStateChange={onEditorStateChange}
         />
-        {!readOnly && <Button onClick={onSave}>Save</Button>}
+        {!readOnly && (
+          <Button label="Save" onClick={onSave} primary rounded size="medium" />
+        )}
       </Wrapper>
     </>
   )
