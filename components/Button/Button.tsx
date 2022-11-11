@@ -54,19 +54,15 @@ export default function Button({
   label,
   ...props
 }: ButtonProps) {
-  const mode = primary
-    ? 'storybook-button--primary'
-    : 'storybook-button--secondary'
-  const shape = rounded
-    ? 'storybook-button--rounded'
-    : 'storybook-button--brick'
+  const mode = primary ? 'button--mode-primary' : 'button--mode-secondary'
+  const shape = rounded ? 'button--shape-rounded' : 'button--shape-brick'
   return (
     <button
       disabled={disabled}
       type="button"
       className={[
-        styles.storybookButton,
-        styles[size],
+        styles['button'],
+        styles[`button--size-${size}`],
         styles[mode],
         styles[shape],
       ].join(' ')}
@@ -74,7 +70,7 @@ export default function Button({
       {...props}
     >
       {leftIcon && leftIcon}
-      <span className={styles.buttonText}>{label}</span>
+      <span className={styles['button__span']}>{label}</span>
     </button>
   )
 }

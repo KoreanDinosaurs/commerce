@@ -180,7 +180,6 @@ export default function Products(props: {
           <div style={{ maxWidth: 600, marginRight: 52 }}>
             <Carousel
               animation="fade"
-              // autoplay
               withoutControls={true}
               wrapAround
               speed={10}
@@ -193,22 +192,9 @@ export default function Products(props: {
                   alt="image"
                   width={500}
                   height={500}
-                  // layout="responsive"
                 />
               ))}
             </Carousel>
-            <div className="flex space-x-3 mt-2">
-              {product.images.map((url, idx) => {
-                return (
-                  <div
-                    key={`${url}-thumb-${idx}`}
-                    onClick={() => setIndex(idx)}
-                  >
-                    <Image src={url} alt="image" width={100} height={100} />
-                  </div>
-                )
-              })}
-            </div>
             {editorState && <Editor editorState={editorState} readOnly />}
           </div>
           <div className="flex flex-col space-y-6">
