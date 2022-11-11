@@ -13,7 +13,7 @@ interface HeaderProps {
 export default function Header({ session }: HeaderProps) {
   const router = useRouter()
   return (
-    <div className={s.Container}>
+    <div className={s['l-container']}>
       <Image
         src={'/image/brand-logo.png'}
         width={150}
@@ -22,7 +22,7 @@ export default function Header({ session }: HeaderProps) {
         alt="브랜드 로고 이미지"
         onClick={() => router.push('/')}
       />
-      <div>
+      <div className={s['l-wrap']}>
         <IconHeart onClick={() => router.push('/wishlist')} />
         <IconShoppingCart onClick={() => router.push('/cart')} />
         {session ? (

@@ -1,4 +1,4 @@
-.Container {
+.l-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -11,8 +11,8 @@
   padding: 0 3rem;
   margin-bottom: 2rem;
   box-shadow: 4px 0 10px 0 rgb(0 0 0 / 10%);
-  div {
-    display: flex;
-    gap: 1rem;
-  }
+}
+.l-wrap {
+  display: flex;
+  gap: 1rem;
 }

@@ -38,7 +38,7 @@ export default function Profile({
   layout = 'fixed',
   ...props
 }: ProfileProps) {
-  const shape = rounded ? 'storybook-image--rounded' : ''
+  const shape = rounded ? 'c-profile__image--shape-rounded' : ''
 
   let imageSize
   switch (size) {

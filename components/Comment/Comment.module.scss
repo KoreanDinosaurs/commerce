@@ -1,39 +1,37 @@
-.Container {
+.c-comment {
   display: flex;
   gap: 0.4rem;
 }
-.Wrap {
+.l-container {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
   gap: 0.4rem;
-
-  div:first-child {
-    line-height: 30px;
-    font-weight: 600;
-    font-size: 0.9rem;
-  }
-  div:nth-of-type(2) {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-size: 0.6rem;
-    div {
-      display: flex;
-      flex-direction: column;
-      gap: 0.1rem;
-      color: grey;
-      span:nth-of-type(1) {
-        font-weight: 600;
-      }
-    }
-  }
-  div:nth-of-type(3) {
-    display: flex;
-  }
 }
-
-.Date {
+.l-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.6rem;
+}
+.l-product {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  color: grey;
+}
+.l-rate {
+  display: flex;
+}
+.c-comment__text-product-name {
+  font-weight: 600;
+}
+.c-comment__text--username {
+  line-height: 30px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.c-comment__text--date {
   font-size: 0.3rem;
   color: grey;
 }

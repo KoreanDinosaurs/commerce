@@ -6,7 +6,7 @@ import { IconStar } from '@tabler/icons'
 import CustomEditor from '@components/Editor'
 import Profile from '@components/Profile'
 
-import s from './Comment.module.scss'
+import styles from './Comment.module.scss'
 
 export interface CommentProps {
   amount: number
@@ -32,13 +32,15 @@ export interface CommentProps {
 
 export function Comment({ item }: { item: CommentProps }) {
   return (
-    <div className={s.Container}>
+    <div className={styles['c-comment']}>
       <Profile src={item.userImage} rounded alt="프로필 이미지" />
-      <div className={s.Wrap}>
+      <div className={styles['l-container']}>
         <div>
-          <span>{item.userName}</span>
+          <span className={styles['c-comment__text--username']}>
+            {item.userName}
+          </span>
         </div>
-        <div>
+        <div className={styles['l-wrap']}>
           <Image
             alt="상품 이미지"
             src={item.productImage}
@@ -46,12 +48,14 @@ export function Comment({ item }: { item: CommentProps }) {
             height={40}
             layout="fixed"
           />
-          <div>
-            <span>{item.productName}</span>
+          <div className={styles['l-product']}>
+            <span className={styles['c-comment__text-product-name']}>
+              {item.productName}
+            </span>
             <span>{item.quantity}개 구입</span>
           </div>
         </div>
-        <div>
+        <div className={styles['l-rate']}>
           {Array.from({ length: 5 }).map((_, idx) => (
             <IconStar
               key={idx}
@@ -68,7 +72,7 @@ export function Comment({ item }: { item: CommentProps }) {
           noPadding
         />
       </div>
-      <div className={s.Date}>
+      <div className={styles['comment__text--date']}>
         {format(new Date(item.updatedAt), 'yyyy년 M월 d일')}
       </div>
     </div>
