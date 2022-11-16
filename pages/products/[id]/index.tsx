@@ -19,9 +19,14 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { IconHeartbeat, IconHeart, IconShoppingCart } from '@tabler/icons'
 import { CountControl } from '@components/CountControl'
 import { ORDER_QUERY_KEY } from 'pages/my'
-import { server } from 'config'
+import { getWishlist, updateWishlist } from 'network/api/wishlist'
+import { AxiosError } from 'axios'
+import { updateCart } from 'network/api/cart'
+import { updateOrder } from 'network/api/order'
+import { server } from 'network/config'
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
+  // TODO: promise all로 처리
   const product = await fetch(
     `${server}/api/get-product?id=${context.params?.id}`,
   )
@@ -40,6 +45,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 }
 
+/**  TODO:
+ *    1. 코드 리펙토링
+ *    2. react-query 타입 명시
+ *    3. 사이즈 선택 기능
+ */
+
 export default function Products(props: {
   product: products & { images: string[] }
   comments: CommentProps[]
@@ -49,7 +60,7 @@ export default function Products(props: {
   const { id: productId } = router.query
   const { data: session } = useSession()
 
-  const [index, setIndex] = useState(0)
+  const [index] = useState(0)
   const [quantity, setQuantity] = useState<number | undefined>(1)
   const [editorState] = useState<EditorState | undefined>(() =>
     props.product.contents
@@ -59,22 +70,13 @@ export default function Products(props: {
       : EditorState.createEmpty(),
   )
 
-  const { data: wishList }: { data: string[] | undefined } = useQuery(
+  const { data: wishList } = useQuery<string[], AxiosError, string[], [string]>(
     ['wishList'],
-    () =>
-      fetch('/api/get-wishlist')
-        .then((res) => res.json())
-        .then((data) => data.items),
+    getWishlist,
   )
 
-  const { mutate } = useMutation<string, unknown, string>(
-    (productId) =>
-      fetch('/api/update-wishlist', {
-        method: 'POST',
-        body: JSON.stringify({ productId }),
-      })
-        .then((data) => data.json())
-        .then((data) => data.items),
+  const { mutate } = useMutation<string, AxiosError, string>(
+    () => updateWishlist(productId as string),
     {
       onMutate: async (productId) => {
         await queryClient.cancelQueries(['wishList'])
@@ -100,49 +102,30 @@ export default function Products(props: {
   )
 
   const { mutate: addCart } = useMutation<
-    unknown,
-    unknown,
+    undefined,
+    AxiosError,
     Omit<Cart, 'id' | 'userId'>
-  >(
-    (item) =>
-      fetch('/api/add-cart', {
-        method: 'POST',
-        body: JSON.stringify({ item }),
-      })
-        .then((data) => data.json())
-        .then((data) => data.items),
-    {
-      onMutate: () => {
-        queryClient.invalidateQueries(['/api/get-cart'])
-      },
-      onSuccess: () => {
-        router.push('/cart')
-      },
+  >((item) => updateCart(item), {
+    onMutate: () => {
+      queryClient.invalidateQueries(['/api/get-cart'])
     },
-  )
+    onSuccess: () => {
+      router.push('/cart')
+    },
+  })
 
   const { mutate: addOrder } = useMutation<
+    undefined,
     unknown,
-    unknown,
-    Omit<OrderItem, 'id'>[],
-    any
-  >(
-    (items) =>
-      fetch('/api/add-order', {
-        method: 'POST',
-        body: JSON.stringify({ items }),
-      })
-        .then((data) => data.json())
-        .then((data) => data.items),
-    {
-      onMutate: () => {
-        queryClient.invalidateQueries([ORDER_QUERY_KEY])
-      },
-      onSuccess: () => {
-        router.push('/my')
-      },
+    Omit<OrderItem, 'id'>[]
+  >((item) => updateOrder(item), {
+    onMutate: () => {
+      queryClient.invalidateQueries([ORDER_QUERY_KEY])
     },
-  )
+    onSuccess: () => {
+      router.push('/my')
+    },
+  })
 
   const product = props.product
   const isWished = wishList ? wishList.includes(productId as string) : false
@@ -212,6 +195,9 @@ export default function Products(props: {
             <div className="flex gap-4">
               <Button
                 label="장바구니"
+                primary
+                rounded
+                size="medium"
                 leftIcon={<IconShoppingCart width={20} height={20} />}
                 onClick={() => {
                   if (session == null) {
@@ -221,13 +207,14 @@ export default function Products(props: {
                   }
                   validate('cart')
                 }}
+              />
+              <Button
+                label="찜하기"
                 primary
                 rounded
                 size="medium"
-              />
-              <Button
                 disabled={wishList == null}
-                label="찜하기"
+                backgroundColor={isWished ? 'red' : 'grey'}
                 leftIcon={
                   isWished ? (
                     <IconHeart size={20} stroke={1.5} />
@@ -235,7 +222,6 @@ export default function Products(props: {
                     <IconHeartbeat size={20} stroke={1.5} />
                   )
                 }
-                backgroundColor={isWished ? 'red' : 'grey'}
                 onClick={() => {
                   if (session == null) {
                     alert('로그인이 필요해요')
@@ -244,13 +230,14 @@ export default function Products(props: {
                   }
                   mutate(productId as string)
                 }}
-                primary
-                rounded
-                size="medium"
               />
             </div>
             <Button
               label="구매하기"
+              primary
+              rounded
+              size="medium"
+              backgroundColor="black"
               onClick={() => {
                 if (session == null) {
                   alert('로그인이 필요해요')
@@ -259,10 +246,6 @@ export default function Products(props: {
                 }
                 validate('order')
               }}
-              backgroundColor="black"
-              primary
-              rounded
-              size="medium"
             />
             <div className="text-sm  text-zinc-300">
               등록: {format(new Date(product.createdAt), 'yyyy년 M월 d일')}
@@ -272,7 +255,7 @@ export default function Products(props: {
       ) : (
         <div>로딩중</div>
       )}
-      {!!props.comments.length && (
+      {props.comments.length !== 0 && (
         <div className="px-60">
           <p className="text-xl font-semibold mb-4">구매후기</p>
           {props.comments &&

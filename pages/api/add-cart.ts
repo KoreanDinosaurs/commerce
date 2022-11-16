@@ -31,7 +31,7 @@ export default async function handler(
 ) {
   try {
     const session = await unstable_getServerSession(req, res, authOptions)
-    const { item } = JSON.parse(req.body)
+    const item = JSON.parse(req.body)
     if (session == null) {
       res.status(400).json({ items: [], message: `no Session` })
       return

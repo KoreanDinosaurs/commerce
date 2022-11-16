@@ -19,7 +19,6 @@ async function addOrder(
       console.log(`Created id: ${orderItem.id}`)
       orderItemIds.push(orderItem.id)
     }
-    console.log(JSON.stringify(orderItemIds))
     const response = await prisma.orders.create({
       data: {
         userId,
@@ -28,7 +27,6 @@ async function addOrder(
         status: 0,
       },
     })
-    console.log(response)
     return response
   } catch (error) {
     console.error(error)
@@ -46,12 +44,12 @@ export default async function handler(
 ) {
   try {
     const session = await unstable_getServerSession(req, res, authOptions)
-    const { items, orderInfo } = JSON.parse(req.body)
+    const items = JSON.parse(req.body)
     if (session == null) {
       res.status(400).json({ items: [], message: `no Session` })
       return
     }
-    const products = await addOrder(String(session?.id), items, orderInfo)
+    const products = await addOrder(String(session?.id), items)
     res.status(200).json({ items: products, message: `Success` })
   } catch (error) {
     res.status(400).json({ message: `Failed` })

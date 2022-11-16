@@ -22,7 +22,12 @@ export default function Home() {
 
   const debouncedKeyword = useDebounce<string>(keyword)
 
-  const { data: categories } = useQuery<categories[]>({
+  const { data: categories } = useQuery<
+    categories[],
+    unknown,
+    categories[],
+    [string]
+  >({
     queryKey: ['categories'],
     queryFn: () =>
       fetch('api/get-categories')
@@ -30,7 +35,7 @@ export default function Home() {
         .then((data) => data.items),
   })
 
-  const { data: total } = useQuery(
+  const { data: total } = useQuery<number>(
     ['products-count', selectedCategory, debouncedKeyword],
     () =>
       fetch(
