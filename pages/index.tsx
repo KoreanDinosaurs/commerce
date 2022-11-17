@@ -5,19 +5,20 @@ import { useRouter } from 'next/router'
 import Image from 'next/image'
 import Head from '@components/Head'
 import ProductSkeleton from '@components/Skeleton/ProductSkeleton'
-import { Pagination, SegmentedControl, Select } from '@mantine/core'
+import { Pagination, SegmentedControl } from '@mantine/core'
 
 import useDebounce from 'hooks/useDebounce'
 import { CATEGORY_MAP, FILTERS, TAKE } from 'constants/products'
 
 import { categories, products } from '@prisma/client'
 import Search from '@components/Search'
+import Select from '@components/Select'
 
 export default function Home() {
   const router = useRouter()
   const [activePage, setPage] = useState(1)
   const [selectedCategory, setCategory] = useState<string>('-1')
-  const [selectedFilter, setFilter] = useState<string | null>(FILTERS[0].value)
+  const [selectedFilter, setFilter] = useState<string>(FILTERS[0].value)
   const [search, setSearch] = useState<string>('')
 
   const debouncedKeyword = useDebounce<string>(search)
@@ -119,6 +120,7 @@ export default function Home() {
               />
             </div>
           )}
+          {/* <Select value={selectedFilter} onChange={setFilter} data={FILTERS} /> */}
           <Select value={selectedFilter} onChange={setFilter} data={FILTERS} />
         </div>
         {isLoading && (
