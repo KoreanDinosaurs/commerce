@@ -4,23 +4,23 @@ import { useRouter } from 'next/router'
 
 import Image from 'next/image'
 import Head from '@components/Head'
-import { IconSearch } from '@tabler/icons'
 import ProductSkeleton from '@components/Skeleton/ProductSkeleton'
-import { Input, Pagination, SegmentedControl, Select } from '@mantine/core'
+import { Pagination, SegmentedControl, Select } from '@mantine/core'
 
 import useDebounce from 'hooks/useDebounce'
 import { CATEGORY_MAP, FILTERS, TAKE } from 'constants/products'
 
 import { categories, products } from '@prisma/client'
+import Search from '@components/Search'
 
 export default function Home() {
   const router = useRouter()
   const [activePage, setPage] = useState(1)
   const [selectedCategory, setCategory] = useState<string>('-1')
   const [selectedFilter, setFilter] = useState<string | null>(FILTERS[0].value)
-  const [keyword, setKeyword] = useState<string>('')
+  const [search, setSearch] = useState<string>('')
 
-  const debouncedKeyword = useDebounce<string>(keyword)
+  const debouncedKeyword = useDebounce<string>(search)
 
   const { data: categories } = useQuery<
     categories[],
@@ -66,10 +66,6 @@ export default function Home() {
         }),
   )
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setKeyword(e.target.value)
-  }
-
   const highlightedText = useCallback((text: string, query: string) => {
     if (query === '') return text
     if (query !== '') {
@@ -97,11 +93,13 @@ export default function Home() {
       />
       <div className="mt-10 mb-36">
         <div className="mb-4">
-          <Input
-            icon={<IconSearch />}
+          <Search
+            value={search}
+            setValue={setSearch}
             placeholder="Search Item You Want"
-            value={keyword}
-            onChange={handleChange}
+            leftIcon
+            rightIcon
+            width="100%"
           />
         </div>
         <div className="mb-4 flex justify-between align-middle">
@@ -164,9 +162,9 @@ export default function Home() {
             })}
           </div>
         )}
-        {products && !products.length && keyword && (
+        {products && !products.length && search && (
           <p className="mb-4">
-            {`'${keyword}'`}에 대한 검색 결과가 존재하지 않습니다.
+            {`'${search}'`}에 대한 검색 결과가 존재하지 않습니다.
           </p>
         )}
         <div className="w-full flex mt-5">

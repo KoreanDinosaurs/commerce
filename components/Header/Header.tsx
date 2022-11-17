@@ -19,6 +19,7 @@ export default function Header({ session }: HeaderProps) {
         width={150}
         height={75}
         layout="fixed"
+        priority
         alt="브랜드 로고 이미지"
         onClick={() => router.push('/')}
       />
