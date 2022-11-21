@@ -14,6 +14,8 @@ import { categories, products } from '@prisma/client'
 import Search from '@components/Search'
 import Select from '@components/Select'
 
+import styles from 'styles/pages/Index.module.scss'
+
 export default function Home() {
   const router = useRouter()
   const [activePage, setPage] = useState(1)
@@ -92,8 +94,8 @@ export default function Home() {
         desc="Next Commerce입니다."
         image={'/public/image/next.png'}
       />
-      <div className="mt-10 mb-36">
-        <div className="mb-4">
+      <div className={styles.main}>
+        <div className={styles.main__search}>
           <Search
             value={search}
             setValue={setSearch}
@@ -103,35 +105,32 @@ export default function Home() {
             width="100%"
           />
         </div>
-        <div className="mb-4 flex justify-between align-middle">
+        <div className={styles.main__toolbar}>
           {categories && (
-            <div className="mb-4">
-              <SegmentedControl
-                value={selectedCategory}
-                onChange={setCategory}
-                onClick={() => setPage(1)}
-                data={[
-                  { label: 'ALL', value: '-1' },
-                  ...categories.map((category) => {
-                    return { label: category.name, value: String(category.id) }
-                  }),
-                ]}
-                color="dark"
-              />
-            </div>
+            <SegmentedControl
+              value={selectedCategory}
+              onChange={setCategory}
+              onClick={() => setPage(1)}
+              data={[
+                { label: 'ALL', value: '-1' },
+                ...categories.map((category) => {
+                  return { label: category.name, value: String(category.id) }
+                }),
+              ]}
+              color="dark"
+            />
           )}
-          {/* <Select value={selectedFilter} onChange={setFilter} data={FILTERS} /> */}
           <Select value={selectedFilter} onChange={setFilter} data={FILTERS} />
         </div>
         {isLoading && (
-          <div className="grid grid-cols-3 gap-5">
+          <div className={styles.main__item}>
             {Array.from({ length: 9 }).map((_, idx) => (
               <ProductSkeleton key={idx} />
             ))}
           </div>
         )}
         {products && (
-          <div className="grid grid-cols-3 gap-5">
+          <div className={styles.main__item}>
             {products.map((item) => {
               return (
                 <div
@@ -148,15 +147,15 @@ export default function Home() {
                     placeholder="blur"
                     blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mMUEhaqBwABLgC4ehE0xwAAAABJRU5ErkJggg=="
                   />
-                  <div className="flex gap-4">
-                    <span className="whitespace-nowrap overflow-hidden text-ellipsis">
+                  <div className={styles.main__item_container}>
+                    <span className={styles['main__item--title']}>
                       {highlightedText(item.name, debouncedKeyword)}
                     </span>
-                    <span className="ml-auto whitespace-nowrap">{`${item.price.toLocaleString(
-                      'ko-KR',
-                    )}원`}</span>
+                    <span
+                      className={styles['main__item--price']}
+                    >{`${item.price.toLocaleString('ko-KR')}원`}</span>
                   </div>
-                  <span className="text-zinc-400">
+                  <span className={styles['main__item--category']}>
                     {CATEGORY_MAP[item.category_id - 1]}
                   </span>
                 </div>
@@ -165,11 +164,11 @@ export default function Home() {
           </div>
         )}
         {products && !products.length && search && (
-          <p className="mb-4">
+          <p className={styles['main__item--null']}>
             {`'${search}'`}에 대한 검색 결과가 존재하지 않습니다.
           </p>
         )}
-        <div className="w-full flex mt-5">
+        <div className={styles.main__pagination}>
           {!!total && (
             <Pagination
               className="m-auto"

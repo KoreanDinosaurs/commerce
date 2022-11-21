@@ -1,0 +1,15 @@
+.layout {
+  padding: 0 8rem;
+}
+
+@include tablet {
+  .layout {
+    padding: 0 4rem;
+  }
+}
+
+@include mobile {
+  .layout {
+    padding: 0 1rem;
+  }
+}

@@ -9,7 +9,7 @@ import {
 import { SessionProvider } from 'next-auth/react'
 import { Session } from 'next-auth'
 
-import Layout from '@components/Layout'
+import Layout from '@components/Layout/Layout'
 
 import type { AppProps } from 'next/app'
 import '../styles/globals.scss'

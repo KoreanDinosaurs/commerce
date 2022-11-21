@@ -4,7 +4,7 @@
   align-items: center;
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 101;
   background-color: white;
   width: 100%;
   height: 75px;
@@ -12,7 +12,14 @@
   margin-bottom: 2rem;
   box-shadow: 4px 0 10px 0 rgb(0 0 0 / 10%);
 }
+
 .l-wrap {
   display: flex;
   gap: 1rem;
+}
+
+@include mobile {
+  .l-container {
+    padding: 0 1rem;
+  }
 }
