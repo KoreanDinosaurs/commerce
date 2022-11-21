@@ -21,7 +21,19 @@ module.exports = {
         extensions: config.resolve.extensions,
       }),
     ]
-
+    config.module.rules.push({
+      test: /\.scss$/,
+      loaders: [
+        'style-loader',
+        'css-loader',
+        {
+          loader: 'sass-loader',
+          options: {
+            additionalData: `@import "styles/_variables.scss"; @import "styles/_mixins.scss";`,
+          },
+        },
+      ],
+    })
     const rules = config.module.rules
     const fileLoaderRule = rules.find((rule) => rule.test.test('.svg'))
     fileLoaderRule.exclude = /\.svg$/
